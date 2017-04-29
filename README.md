@@ -1,4 +1,4 @@
 # Blender-Snippets
-Code tests done with the Blender Python API
+Code tests with the Blender Python API
 
-Blender Python API code run from the text editor
+This code is intended to be run from Blender's script editor.
