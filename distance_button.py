@@ -12,7 +12,7 @@
 # 
 # When a Left Mouse Click is detected, a specific message 
 # will be printed to the console depending on which point
-# the mouse cursor is closest to.
+# the mouse cursor was closest to.
 # 
 # Tested with Blender 2.78c
 #  
@@ -41,25 +41,6 @@ def draw_pt_2D(pt_co, pt_color):
     bgl.glVertex2f(*pt_co)
     bgl.glEnd()
     return
-
-
-def drawBox(boxCo, color):
-    bgl.glColor4f(*color)  #black or white?
-    bgl.glBegin(bgl.GL_LINE_STRIP)
-    for coord in boxCo:
-        bgl.glVertex2f( coord[0], coord[1] )
-    bgl.glVertex2f( boxCo[0][0], boxCo[0][1] )
-    bgl.glEnd()
-
-    return
-
-
-def get_box_coor(origin,rWidth,rHeight,xOffset,yOffset):
-    coBL = (origin[0] + xOffset), (origin[1] + yOffset)
-    coTL = (origin[0] + xOffset), (rHeight - yOffset)
-    coTR = (rWidth - xOffset), (rHeight - yOffset)
-    coBR = (rWidth - xOffset), (origin[1] + yOffset)
-    return [coBL, coTL, coTR, coBR]
 
 
 def draw_callback_px(self, context):
