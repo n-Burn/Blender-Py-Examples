@@ -15,7 +15,7 @@
 # the mouse cursor was closest to.
 # 
 # Tested with Blender 2.78c
-#  
+# 
 #==========================================================
 
 import bpy
@@ -81,10 +81,10 @@ def draw_callback_px(self, context):
     self.L_click = False
 
 
-class ModalDrawOperator(bpy.types.Operator):
+class ModalDisBtnOperator(bpy.types.Operator):
     '''Draw a line with the mouse'''
-    bl_idname = "view3d.modal_operator"
-    bl_label = "Simple Modal View3D Operator"
+    bl_idname = "view3d.modal_disbtn_operator"
+    bl_label = "Basic Distance Button Operator"
 
     def modal(self, context, event):
         context.area.tag_redraw()
@@ -124,10 +124,10 @@ class ModalDrawOperator(bpy.types.Operator):
 
 
 def register():
-    bpy.utils.register_class(ModalDrawOperator)
+    bpy.utils.register_class(ModalDisBtnOperator)
 
 def unregister():
-    bpy.utils.unregister_class(ModalDrawOperator)
+    bpy.utils.unregister_class(ModalDisBtnOperator)
 
 if __name__ == "__main__":
     register()
