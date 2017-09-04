@@ -1,21 +1,19 @@
-#################################################
+#####################################################################
 #
 #  Display Mouse Location Example
 #
 #  disp_mouse_loc.py
 #
 #  Left clicking places a point
-#    The mouse's 2D location and distance from
-#    the last point are displayed on the bottom
-#    left of the 3D View.
+#    The mouse's 2D location and distance from the last point are
+#    displayed on the bottom left of the 3D View.
 #  
-#  If you click the mouse within 80 pixels of a
-#  point, the point will be relocated to where
-#  you just clicked.
-#  
+#  If you click the mouse within 80 pixels of a point, the point
+#  will be relocated to where you just clicked.
+# 
 #  Tested with Blender 2.78c
 #  
-#################################################
+#####################################################################
 
 import bpy
 import bgl
@@ -61,8 +59,8 @@ def draw_callback_px(self, context):
         draw_pt_2D(self.pt_store, color_white)
         self.dist_from_click = get_dist_2D(self.pt_store, self.mouse)
 
-    draw_font_at_pt("Dist from point: " + format(self.dist_from_click, '.2f'), [70,40], color_yellow)
-    #draw_font_at_pt("Dist from point: " + str(dist_from_click), [70,40], color_yellow)
+    draw_font_at_pt("Dist from point: " + format(self.dist_from_click, '.2f'), [70, 40], color_yellow)
+    #draw_font_at_pt("Dist from point: " + str(dist_from_click), [70, 40], color_yellow)
 
 
 class MouseLocDispOperator(bpy.types.Operator):
@@ -102,7 +100,7 @@ class MouseLocDispOperator(bpy.types.Operator):
                         args, 'WINDOW', 'POST_PIXEL')
 
             self.pt_store = []
-            self.mouse = (-5000,-5000)
+            self.mouse = (-5000, -5000)
             self.dist_from_click = -1.0
 
             context.window_manager.modal_handler_add(self)
