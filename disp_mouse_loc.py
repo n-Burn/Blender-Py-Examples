@@ -25,7 +25,7 @@ from math import sqrt
 print("\n\n\n  Add-on Loaded!\n") # debug
 
 
-def get_dist_2D(pt1,pt2):
+def get_dist_2D(pt1, pt2):
     x1, y1, x2, y2 = pt1[0], pt1[1], pt2[0], pt2[1]
     return sqrt( abs( ((x2-x1)**2) + ((y2-y1)**2) ) )
 
@@ -51,18 +51,18 @@ def draw_pt_2D(pt_co, pt_color):
 
 
 def draw_callback_px(self, context):
-    colorWhite  = [1.0, 1.0, 1.0, 1.0]
-    colorGreen  = [0.0, 1.0, 0.0, 0.5]
-    colorYellow = [1.0, 1.0, 0.5, 1.0]
+    color_white  = [1.0, 1.0, 1.0, 1.0]
+    color_green  = [0.0, 1.0, 0.0, 0.5]
+    color_yellow = [1.0, 1.0, 0.5, 1.0]
 
-    draw_font_at_pt("Mouse Loc: "+str(self.mouse[0])+', '+str(self.mouse[1]), [70,64], colorGreen )
-    
-    if self.ptStr != []:
-        draw_pt_2D( self.ptStr, colorWhite )
-        self.distFrClick = get_dist_2D( self.ptStr, self.mouse )
-    
-    draw_font_at_pt ( "Dist from point: " + format(self.distFrClick, '.2f'), [70,40], colorYellow )    
-    #draw_font_at_pt ( "Dist from point: " + str(distFrClick), [70,40], colorYellow )    
+    draw_font_at_pt("Mouse Loc: "+str(self.mouse[0])+', '+str(self.mouse[1]), [70, 64], color_green)
+
+    if self.pt_store != []:
+        draw_pt_2D(self.pt_store, color_white)
+        self.dist_from_click = get_dist_2D(self.pt_store, self.mouse)
+
+    draw_font_at_pt("Dist from point: " + format(self.dist_from_click, '.2f'), [70,40], color_yellow)
+    #draw_font_at_pt("Dist from point: " + str(dist_from_click), [70,40], color_yellow)
 
 
 class MouseLocDispOperator(bpy.types.Operator):
@@ -72,8 +72,10 @@ class MouseLocDispOperator(bpy.types.Operator):
 
     def modal(self, context, event):
         context.area.tag_redraw()
-        
-        if event.type in {'A', 'MIDDLEMOUSE', 'WHEELUPMOUSE', 'WHEELDOWNMOUSE', 'NUMPAD_1', 'NUMPAD_2', 'NUMPAD_3', 'NUMPAD_4', 'NUMPAD_6', 'NUMPAD_7', 'NUMPAD_8', 'NUMPAD_9', 'NUMPAD_5'}:
+
+        if event.type in {'A', 'MIDDLEMOUSE', 'WHEELUPMOUSE', 'WHEELDOWNMOUSE', 
+                    'NUMPAD_1', 'NUMPAD_2', 'NUMPAD_3', 'NUMPAD_4', 'NUMPAD_6', 
+                    'NUMPAD_7', 'NUMPAD_8', 'NUMPAD_9', 'NUMPAD_5'}:
             return {'PASS_THROUGH'}
 
         if event.type == 'MOUSEMOVE':
@@ -81,8 +83,8 @@ class MouseLocDispOperator(bpy.types.Operator):
 
         if event.type == 'LEFTMOUSE' and event.value == 'RELEASE':
             click_loc = (event.mouse_region_x, event.mouse_region_y)
-            if abs( self.distFrClick) < 80:
-                self.ptStr = [ *click_loc ]
+            if abs( self.dist_from_click) < 80:
+                self.pt_store = [ *click_loc ]
 
         if event.type == 'ESC':
             bpy.types.SpaceView3D.draw_handler_remove(self._handle, 'WINDOW')
@@ -96,11 +98,12 @@ class MouseLocDispOperator(bpy.types.Operator):
             args = (self, context)
             # Add the region OpenGL drawing callback
             # draw in view space with 'POST_VIEW' and 'PRE_VIEW'
-            self._handle = bpy.types.SpaceView3D.draw_handler_add(draw_callback_px, args, 'WINDOW', 'POST_PIXEL')
+            self._handle = bpy.types.SpaceView3D.draw_handler_add(draw_callback_px, 
+                        args, 'WINDOW', 'POST_PIXEL')
 
-            self.ptStr = []
+            self.pt_store = []
             self.mouse = (-5000,-5000)
-            self.distFrClick = -1.0
+            self.dist_from_click = -1.0
 
             context.window_manager.modal_handler_add(self)
             return {'RUNNING_MODAL'}
