@@ -1,4 +1,4 @@
-Blender Notes
+Blender Python API Notes
 
 # Get Object Location \ Original Coordinates
 # blender python get origin coordinates
@@ -13,23 +13,8 @@ bpy.context.edit_object.matrix_world.inverted() * world_co  # convert world to l
 bpy.context.scene.cursor_location  # stored as Vector type
 bpy.context.space_data.pivot_point = 'CURSOR'
 
-# Active Object
-bpy.context.scene.objects.active  # stored as ? type
-# Make object with "Cube" name active
-bpy.context.scene.objects.active = bpy.data.objects["Cube"]
-
-# Edit Mode
-bpy.context.edit_object  # object being edited (if in edit mode)
-
-# BMesh
-import bmesh
-bm = bmesh.from_edit_mesh( bpy.context.edit_object.data )
-bm.verts[0]
-bm.edges[0]
-bm.faces[0]
-
 # Scene > Object
-#   Get objects scene index (-1 if not found):
+#   Get object's scene index (-1 if not found):
 bpy.context.scene.objects.find( bpy.context.scene.objects[0].name )
 
 # Scene > Object > Mesh > Vertices\Edges\Faces
@@ -57,26 +42,53 @@ bpy.context.scene.objects[5].data.edges[0].
 len(bpy.context.scene.layers) # returns 20
 bpy.context.scene.layers[0]  # retunrs True / False
 
-Scripting_General
+# Active Object
+bpy.context.scene.objects.active  # stored as ? type
+# Make object with "Cube" name active
+bpy.context.scene.objects.active = bpy.data.objects["Cube"]
 
-# Select / Unselect everything
+# Object mode select / unselect
+# Select / Unselect Everything
 bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.select_all(action='DESELECT')
-
-# Select / Unselect single items
-bpy.context.selected_objects  # currently selected objects
-bm.verts[-1].select = True
-bm.select_history
-bm.select_history.active.co
+# return currently selected objects
+bpy.context.selected_objects  
+# return T/F if obj 0 is selected?
 bpy.context.scene.objects[0].select
-selected = [v for v in bm.verts if v.select] # generate list of all selected verts
-
 # Add "Cube" to Selected Objects
 bpy.data.objects["Cube"].select = True
 # If "Cube" is has object index 1
 bpy.data.objects[1].select = True
 
+# Mesh Edit Mode
+# object being edited (if in edit mode)
+bpy.context.edit_object  
+# BMesh
+import bmesh
+bm = bmesh.from_edit_mesh( bpy.context.edit_object.data )
+bm.verts[0]
+bm.edges[0]
+bm.faces[0]
+
+# Mesh Edit mode: Select / Unselect
+# Select / Unselect everything
+bpy.ops.mesh.select_all(action='SELECT')
+bpy.ops.mesh.select_all(action='DESELECT')
+bm.verts[-1].select = True
+bm.select_history
+bm.select_history.active.co
+bpy.context.scene.objects[0].select
+# get list of all selected verts
+selected = [v for v in bm.verts if v.select]
+
+
+Scripting_General
+
 # Move "Cube" object "-0.1" units on X axis
+# first make sure only cube is selected
+bpy.ops.object.select_all(action='DESELECT')
+bpy.data.objects["Cube"].select = True
+# Send move command to selected object ("Cube")
 bpy.ops.transform.translate(value=(-0.1, 0, 0))
 
 # Mesh editing
@@ -102,7 +114,7 @@ for the class invoke defintion,
 # Other useful Python - Blender stuff
 #==========================================================
 
-# get non-rounded Vector coordinates ( print(vec) == rounded )
+# print non-rounded Vector coordinates ( print(vec) == rounded )
 print([vec])  # option 1
 print((vec))  # option 2
 for v in vec: print(v, end='')  # option 3
