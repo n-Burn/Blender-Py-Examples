@@ -10,6 +10,13 @@ bpy.context.space_data.pivot_point = 'CURSOR'
 len(bpy.context.scene.layers) # returns 20
 bpy.context.scene.layers[0]  # returns True / False
 
+# Changing Modes
+cmode = bpy.context.mode
+cmode = 'EDIT_MESH'
+cmode = 'OBJECT'
+bpy.ops.object.editmode_toggle()
+bpy.ops.object.mode_set(mode='OBJECT', toggle=True)
+
 # Active Object
 bpy.context.scene.objects.active  # stored as ? type
 # Make object with "Cube" name active
@@ -72,6 +79,15 @@ bpy.context.scene.objects[0].select
 bpy.data.objects["Cube"].select = True
 # If "Cube" is has object index 1
 bpy.data.objects[1].select = True
+# Select / Unselect Vertex (must be in object mode)
+bpy.data.meshes['Plane.001'].vertices[6].select = False
+# Select / Unselect Edges
+bpy.data.meshes['Plane.001'].edge[0].select = True
+bpy.data.meshes['Plane.001'].edge[0].select = False
+edge_verts = bpy.data.meshes['Plane.001'].edges[0].vertices[:]
+bpy.data.meshes['Plane.001'].vertices[ edge_verts[0] ].select = False
+bpy.data.meshes['Plane.001'].vertices[ edge_verts[1] ].select = False
+
 
 # Mesh Edit Mode
 # object being edited (if in edit mode)
