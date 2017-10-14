@@ -1,0 +1,114 @@
+Blender Notes
+
+# Get Object Location \ Original Coordinates
+# blender python get origin coordinates
+bpy.data.objects[0].matrix_world  # gives more than just origin
+bpy.data.objects[0].matrix_world.inverted()
+bpy.context.edit_object.matrix_world
+bpy.context.edit_object.matrix_world.inverted()
+bpy.context.edit_object.matrix_world * local_co  # convert local to world
+bpy.context.edit_object.matrix_world.inverted() * world_co  # convert world to local
+
+# 3D Cursor Stuff
+bpy.context.scene.cursor_location  # stored as Vector type
+bpy.context.space_data.pivot_point = 'CURSOR'
+
+# Active Object
+bpy.context.scene.objects.active  # stored as ? type
+# Make object with "Cube" name active
+bpy.context.scene.objects.active = bpy.data.objects["Cube"]
+
+# Edit Mode
+bpy.context.edit_object  # object being edited (if in edit mode)
+
+# BMesh
+import bmesh
+bm = bmesh.from_edit_mesh( bpy.context.edit_object.data )
+bm.verts[0]
+bm.edges[0]
+bm.faces[0]
+
+# Scene > Object
+#   Get objects scene index (-1 if not found):
+bpy.context.scene.objects.find( bpy.context.scene.objects[0].name )
+
+# Scene > Object > Mesh > Vertices\Edges\Faces
+bpy.context.scene.objects[5].data.vertices
+len(bpy.context.scene.objects[5].data.vertices)
+bpy.context.scene.objects[5].data.vertices[0]
+bpy.context.scene.objects[5].data.vertices.data.edges[0]
+bpy.context.scene.objects[5].data.vertices.data.polygons[0]
+bpy.context.scene.objects[5].data.vertices[0].id_data  # object id
+bpy.context.scene.objects[5].data.vertices[0].index
+bpy.context.scene.objects[5].data.edges
+len(bpy.context.scene.objects[5].data.edges)
+bpy.context.scene.objects[5].data.edges[0]
+bpy.context.scene.objects[5].data.edges[0].vertices[0]
+bpy.context.scene.objects[5].data.edges[0].index
+bpy.context.scene.objects[5].data.polygons
+len(bpy.context.scene.objects[5].data.polygons)
+bpy.context.scene.objects[5].data.polygons[0]
+bpy.context.scene.objects[5].data.polygons[0].vertices[0]
+bpy.context.scene.objects[5].data.polygons[5].edge_keys
+bpy.context.scene.objects[5].data.polygons[0].index
+
+bpy.context.scene.objects[5].data.edges[0].
+# Layer access
+len(bpy.context.scene.layers) # returns 20
+bpy.context.scene.layers[0]  # retunrs True / False
+
+Scripting_General
+
+# Select / Unselect everything
+bpy.ops.object.select_all(action='SELECT')
+bpy.ops.object.select_all(action='DESELECT')
+
+# Select / Unselect single items
+bpy.context.selected_objects  # currently selected objects
+bm.verts[-1].select = True
+bm.select_history
+bm.select_history.active.co
+bpy.context.scene.objects[0].select
+selected = [v for v in bm.verts if v.select] # generate list of all selected verts
+
+# Add "Cube" to Selected Objects
+bpy.data.objects["Cube"].select = True
+# If "Cube" is has object index 1
+bpy.data.objects[1].select = True
+
+# Move "Cube" object "-0.1" units on X axis
+bpy.ops.transform.translate(value=(-0.1, 0, 0))
+
+# Mesh editing
+  * To change vertex locations in Edit Mode you must use the bmesh module
+  * Exiting edit mode will dump any uncommited bmesh data, recommend leaving 
+    this until the end of a loop / function call when bmesh data no longer
+    is needed
+  * bpy.ops does transformations based off an object's origin. Any 
+    transformations using bpy.ops will have to have their calculations based 
+    on origin data (local coordinates) to work as expected.
+  * turning on snap after a vertex is grabbed (or during vertex creation) 
+    will make so the vertex does not snap to it's base mesh
+    eg: bpy.context.tool_settings.use_snap = True AFTER 
+    bpy.ops.transform.translate('INVOKE_DEFAULT') means base snap FAILS
+  * Axis locks are applied to the location objects are created / grabbed at
+
+# BGL / OpenGL / BLF
+for the class invoke defintion, 
+  POST_PIXEL = 2D layout (eg: bgl.glVertex2f), gl font (text) works
+  POST_VIEW = 3D layout (eg: bgl.glVertex3f), gl font doesn't work
+
+#==========================================================
+# Other useful Python - Blender stuff
+#==========================================================
+
+# get non-rounded Vector coordinates ( print(vec) == rounded )
+print([vec])  # option 1
+print((vec))  # option 2
+for v in vec: print(v, end='')  # option 3
+
+# calculate center of triangular face/polygon
+pt_sum = Vector(( 0, 0, 0 ))
+for i in face_verts: pt_sum += i
+face_center = pt_sum / len(face_verts)
+
