@@ -37,7 +37,6 @@ bpy.context.scene.objects[5].data.polygons[0].vertices[0]
 bpy.context.scene.objects[5].data.polygons[5].edge_keys
 bpy.context.scene.objects[5].data.polygons[0].index
 
-bpy.context.scene.objects[5].data.edges[0].
 # Layer access
 len(bpy.context.scene.layers) # returns 20
 bpy.context.scene.layers[0]  # retunrs True / False
