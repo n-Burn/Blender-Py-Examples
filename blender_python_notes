@@ -1,17 +1,19 @@
 Blender Python API Notes
 
-# Get Object Location \ Original Coordinates
-# blender python get origin coordinates
-bpy.data.objects[0].matrix_world  # gives more than just origin
-bpy.data.objects[0].matrix_world.inverted()
-bpy.context.edit_object.matrix_world
-bpy.context.edit_object.matrix_world.inverted()
-bpy.context.edit_object.matrix_world * local_co  # convert local to world
-bpy.context.edit_object.matrix_world.inverted() * world_co  # convert world to local
-
 # 3D Cursor Stuff
-bpy.context.scene.cursor_location  # stored as Vector type
+# Get 3D Cursor location (stored as Vector type)
+bpy.context.scene.cursor_location
+# Make 3D Cursor the pivot point
 bpy.context.space_data.pivot_point = 'CURSOR'
+
+# Layer access
+len(bpy.context.scene.layers) # returns 20
+bpy.context.scene.layers[0]  # returns True / False
+
+# Active Object
+bpy.context.scene.objects.active  # stored as ? type
+# Make object with "Cube" name active
+bpy.context.scene.objects.active = bpy.data.objects["Cube"]
 
 # Scene > Object
 #   Get object's scene index (-1 if not found):
@@ -37,14 +39,26 @@ bpy.context.scene.objects[5].data.polygons[0].vertices[0]
 bpy.context.scene.objects[5].data.polygons[5].edge_keys
 bpy.context.scene.objects[5].data.polygons[0].index
 
-# Layer access
-len(bpy.context.scene.layers) # returns 20
-bpy.context.scene.layers[0]  # retunrs True / False
+# Object mode location operations
+# Get world location of object 0
+bpy.context.scene.objects[0].location
+# Get object 0's world matrix
+bpy.context.scene.objects[0].matrix_world
+bpy.context.scene.objects[0].matrix_world.inverted()
+bpy.data.objects[0].matrix_world
+bpy.data.objects[0].matrix_world.inverted()
+# convert local coordinate to world
+bpy.context.scene.objects[0].matrix_world * local_co
+# convert world coordinate to local
+bpy.context.scene.objects[0].matrix_world.inverted() * world_co
 
-# Active Object
-bpy.context.scene.objects.active  # stored as ? type
-# Make object with "Cube" name active
-bpy.context.scene.objects.active = bpy.data.objects["Cube"]
+# Mesh edit mode location operations
+bpy.context.edit_object.matrix_world
+bpy.context.edit_object.matrix_world.inverted()
+# convert local to world
+bpy.context.edit_object.matrix_world * local_co
+# convert world to local
+bpy.context.edit_object.matrix_world.inverted() * world_co
 
 # Object mode select / unselect
 # Select / Unselect Everything
@@ -68,6 +82,7 @@ bm = bmesh.from_edit_mesh( bpy.context.edit_object.data )
 bm.verts[0]
 bm.edges[0]
 bm.faces[0]
+bm.verts[0].co  # vert 0 coordinate
 
 # Mesh Edit mode: Select / Unselect
 # Select / Unselect everything
