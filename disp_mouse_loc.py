@@ -1,4 +1,4 @@
-#####################################################################
+#====================================================================
 #
 #  Display Mouse Location Example
 #
@@ -13,12 +13,20 @@
 # 
 #  Tested with Blender 2.78c
 #  
-#####################################################################
+#====================================================================
 
 import bpy
 import bgl
 import blf
 from math import sqrt
+
+
+class Colors:
+    red    = 1.0, 0.0, 0.0, 1.0
+    green  = 0.0, 1.0, 0.0, 1.0
+    white  = 1.0, 1.0, 1.0, 1.0
+    yellow = 1.0, 1.0, 0.0, 1.0
+
 
 print("\n\n\n  Add-on Loaded!\n") # debug
 
@@ -30,17 +38,19 @@ def get_dist_2D(pt1, pt2):
 
 def draw_font_at_pt(text, pt_co, pt_color):
     font_id = 0
+    dpi = 72
+    tsize = 24
     bgl.glColor4f(*pt_color)
     blf.position(font_id, pt_co[0], pt_co[1], 0)
-    blf.size(font_id, 32, 48)
+    blf.size(font_id, tsize, dpi)
     blf.draw(font_id, text)
-    w, h = blf.dimensions(font_id, text)
-    return [w, h]
+    return
 
 
 def draw_pt_2D(pt_co, pt_color):
+    psize = 7
     bgl.glEnable(bgl.GL_BLEND)
-    bgl.glPointSize(7)
+    bgl.glPointSize(psize)
     bgl.glColor4f(*pt_color)
     bgl.glBegin(bgl.GL_POINTS)
     bgl.glVertex2f(*pt_co)
@@ -49,22 +59,18 @@ def draw_pt_2D(pt_co, pt_color):
 
 
 def draw_callback_px(self, context):
-    color_white  = [1.0, 1.0, 1.0, 1.0]
-    color_green  = [0.0, 1.0, 0.0, 0.5]
-    color_yellow = [1.0, 1.0, 0.5, 1.0]
+    draw_font_at_pt("Mouse Loc: "+str(self.mouse[0])+', '+str(self.mouse[1]), (70, 64), Colors.green)
 
-    draw_font_at_pt("Mouse Loc: "+str(self.mouse[0])+', '+str(self.mouse[1]), [70, 64], color_green)
-
-    if self.pt_store != []:
-        draw_pt_2D(self.pt_store, color_white)
+    if self.pt_store is not None:
+        draw_pt_2D(self.pt_store, Colors.white)
         self.dist_from_click = get_dist_2D(self.pt_store, self.mouse)
 
-    draw_font_at_pt("Dist from point: " + format(self.dist_from_click, '.2f'), [70, 40], color_yellow)
-    #draw_font_at_pt("Dist from point: " + str(dist_from_click), [70, 40], color_yellow)
+    draw_font_at_pt("Dist from point: " + format(self.dist_from_click, '.2f'), (70, 40), Colors.yellow)
+    #draw_font_at_pt("Dist from point: " + str(dist_from_click), (70, 40), color_yellow)
 
 
 class MouseLocDispOperator(bpy.types.Operator):
-    """Draw dots with the mouse"""
+    """Display the mouse location"""
     bl_idname = "view3d.display_ms_loc"
     bl_label = "Display Mouse Location"
 
@@ -77,14 +83,13 @@ class MouseLocDispOperator(bpy.types.Operator):
             return {'PASS_THROUGH'}
 
         if event.type == 'MOUSEMOVE':
-            self.mouse = (event.mouse_region_x, event.mouse_region_y)
+            self.mouse = event.mouse_region_x, event.mouse_region_y
 
         if event.type == 'LEFTMOUSE' and event.value == 'RELEASE':
-            click_loc = (event.mouse_region_x, event.mouse_region_y)
-            if abs( self.dist_from_click) < 80:
-                self.pt_store = [ *click_loc ]
+            if abs(self.dist_from_click) < 80:
+                self.pt_store = event.mouse_region_x, event.mouse_region_y
 
-        if event.type == 'ESC':
+        if event.type in {'ESC', 'RIGHTMOUSE'}:
             bpy.types.SpaceView3D.draw_handler_remove(self._handle, 'WINDOW')
             return {'CANCELLED'}
 
@@ -99,8 +104,8 @@ class MouseLocDispOperator(bpy.types.Operator):
             self._handle = bpy.types.SpaceView3D.draw_handler_add(draw_callback_px, 
                         args, 'WINDOW', 'POST_PIXEL')
 
-            self.pt_store = []
-            self.mouse = (-5000, -5000)
+            self.pt_store = None
+            self.mouse = -5000, -5000
             self.dist_from_click = -1.0
 
             context.window_manager.modal_handler_add(self)
