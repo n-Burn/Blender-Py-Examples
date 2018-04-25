@@ -29,7 +29,7 @@ from math import fmod, sqrt
 print("\n\n  Loaded: distance_button\n")  # debug
 
 
-def get_dist_2D(x1,y1,x2,y2):
+def get_dist_2D(x1, y1, x2, y2):
     return sqrt( abs( ((x2-x1)**2) + ((y2-y1)**2) ) )
 
 
@@ -44,10 +44,8 @@ def draw_pt_2D(pt_co, pt_color):
 
 
 def draw_callback_px(self, context):
-    color_grey = [1.0, 1.0, 1.0, 0.25]
-    color_green  = [0.0, 1.0, 0.0, 0.5]
-
-    mouse_co = self.mouse
+    color_grey = 1.0, 1.0, 1.0, 0.25
+    color_green  = 0.0, 1.0, 0.0, 0.5
 
     region = bpy.context.region
     offset_perc = 0.8
@@ -82,7 +80,7 @@ def draw_callback_px(self, context):
 
 
 class ModalDisBtnOperator(bpy.types.Operator):
-    '''Highlight which of 2 drawn squares is closer to the mouse'''
+    '''Highlight which of 2 drawn points is closer to the mouse'''
     bl_idname = "view3d.modal_disbtn_operator"
     bl_label = "Basic Distance Button Operator"
 
@@ -96,7 +94,7 @@ class ModalDisBtnOperator(bpy.types.Operator):
             return {'PASS_THROUGH'}
 
         if event.type == 'MOUSEMOVE':
-            self.mouse = event.mouse_region_x, event.mouse_region_y
+            self.mouse_co = event.mouse_region_x, event.mouse_region_y
 
         if event.type == 'LEFTMOUSE' and event.value == 'RELEASE':
             self.left_mouse = True
@@ -116,7 +114,7 @@ class ModalDisBtnOperator(bpy.types.Operator):
             self._handle = bpy.types.SpaceView3D.draw_handler_add(draw_callback_px, args, 'WINDOW', 'POST_PIXEL')
             
             # initialize these with negative values to prevent false positives
-            self.mouse = -5000,-5000
+            self.mouse_co = -5000, -5000
             self.left_mouse = False
 
             context.window_manager.modal_handler_add(self)
