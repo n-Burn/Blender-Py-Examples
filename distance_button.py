@@ -45,7 +45,7 @@ def draw_pt_2D(pt_co, pt_color):
 
 def draw_callback_px(self, context):
     color_grey = 1.0, 1.0, 1.0, 0.25
-    color_green  = 0.0, 1.0, 0.0, 0.5
+    color_green = 0.0, 1.0, 0.0, 0.5
 
     region = bpy.context.region
     offset_perc = 0.8
@@ -59,8 +59,8 @@ def draw_callback_px(self, context):
     co1 = x1, height_offs
     co2 = x2, height_offs
 
-    ms_co1_dis = get_dist_2D(*co1, *mouse_co)
-    ms_co2_dis = get_dist_2D(*co2, *mouse_co)
+    ms_co1_dis = get_dist_2D(*co1, *self.mouse_co)
+    ms_co2_dis = get_dist_2D(*co2, *self.mouse_co)
 
     if   ms_co1_dis < ms_co2_dis:
         draw_pt_2D(co1, color_green)
@@ -99,7 +99,7 @@ class ModalDisBtnOperator(bpy.types.Operator):
         if event.type == 'LEFTMOUSE' and event.value == 'RELEASE':
             self.left_mouse = True
 
-        if event.type == 'ESC':
+        if event.type in {'ESC', 'RIGHTMOUSE'}:
             bpy.types.SpaceView3D.draw_handler_remove(self._handle, 'WINDOW')
             return {'CANCELLED'}
 
