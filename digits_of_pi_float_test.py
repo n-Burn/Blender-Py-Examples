@@ -7,7 +7,12 @@ print()
 pi42 = "314159265358979323846264338327950288419716"
 print(pi42, '\n')
 pi_vec = Vector()
-for i in range(0, len(pi42)):
+for i in range(len(pi42)):
     pi_vec[0] = float(pi42[:i] + '.' + pi42[i:])
-    print('%2d' % i, pi_vec[0])
+    matched = 0
+    for i2, d in enumerate(str(pi_vec[0]).replace('.', '').strip('0')):
+        if pi42[i2] != d:
+            break
+        matched += 1
+    print("%2d " % i, "%2d " % matched, pi_vec[0])
 print()
