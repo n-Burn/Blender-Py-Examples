@@ -10,8 +10,8 @@ pi_vec = Vector()
 for i in range(len(pi42)):
     pi_vec[0] = float(pi42[:i] + '.' + pi42[i:])
     matched = 0
-    for i2, d in enumerate(str(pi_vec[0]).replace('.', '').strip('0')):
-        if pi42[i2] != d:
+    for d in str(pi_vec[0]).replace('.', '').strip('0'):
+        if pi42[matched] != d:
             break
         matched += 1
     print("%2d " % i, "%2d " % matched, pi_vec[0])
